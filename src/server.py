@@ -19,6 +19,8 @@ def connect_client():
             CLIENTS.append(client)
             IPS.append(ip)
             print(f"{str(ip)} Has been Connected ")
+        except:
+            pass
 # SETING THE CONNECTION FIRST 
 # CHOOSE THE IP WHERE IS THE SERVER LOCAL IP IS ? , AND CHOOSE PORT THAT IS NOT IN USE
 IP = '192.168.1.1'
