@@ -17,13 +17,12 @@ def connect_client():
 # ACCEPTING CONNECTIONS AND APPENDING CONNECTED DEVICES TO AN ARRY
 # HANDLING ERRORS BY USING TRY , EXCEPT METHOD
         try:
-            print("trying to find connection")
             client, ip = SOK.accept()
             CLIENTS.append(client)
             IPS.append(ip)
             print(f"{str(ip)} Has been Connected ")
         except:
-            print("Error")
+
             pass
 
 
@@ -38,7 +37,7 @@ IPS = []
 # INITIATE THE CONNECTION WITH SOCKET
 SOK = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 SOK.bind((IP, PORT))
-print(f'Establishing Connection')
+SOK.listen(10)
 # TO STOP THE LOOP FOR THE CONNECTION IF NEEDED
 stop_flag = False
 # START THREADING TO ACCEPTE MULTIPULE CONNECTION
