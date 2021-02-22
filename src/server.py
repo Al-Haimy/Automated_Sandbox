@@ -4,8 +4,12 @@ server side
 """
 import socket
 import threading
+from concurrent.futures import ThreadPoolExecutor
 
 # FUNCIONT TO ACCEPT MULTIBLE CONNECTION AT THE SAME TIME
+
+
+def init_Sandbox():
 
 
 def connect_client():
@@ -17,9 +21,11 @@ def connect_client():
 # ACCEPTING CONNECTIONS AND APPENDING CONNECTED DEVICES TO AN ARRY
 # HANDLING ERRORS BY USING TRY , EXCEPT METHOD
         try:
-            client, ip = SOK.accept()
+            tar = SOK.accept()
+            client, ip = tar
             CLIENTS.append(client)
             IPS.append(ip)
+            TARGETS.append(tar)
             print(f"{str(ip)} Has been Connected ")
         except:
 
@@ -34,6 +40,7 @@ PORT = 55555
 print(f'just assigned Ip {IP} and Port {PORT}')
 CLIENTS = []
 IPS = []
+TARGETS = []
 # INITIATE THE CONNECTION WITH SOCKET
 SOK = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 SOK.bind((IP, PORT))
@@ -43,3 +50,13 @@ stop_flag = False
 # START THREADING TO ACCEPTE MULTIPULE CONNECTION
 T = threading.Thread(target=connect_client)
 T.start()
+
+
+while True:
+    if len(IPS) == 0:
+        pass
+    elif len(IPS) == 1:
+        init_Sandbox(CLIENTS[0], IPS[0])
+    elif len(IPS) > 1:
+        with ThreadPoolExecutor(max_workers=5) as executor:
+            executor.map(init_Sandbox, TARGETS)
