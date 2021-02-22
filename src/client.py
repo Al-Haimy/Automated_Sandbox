@@ -16,12 +16,12 @@ def connectToServer():
     while True:
 
         try:
-            print("trying to find connection")
+            # print("trying to find connection")
             SOK.connect((IP, PORT))
             print('connected')
             break
         except:
-            print("Error")
+            # print("Error")
             time.sleep(9)
             connectToServer()
 
