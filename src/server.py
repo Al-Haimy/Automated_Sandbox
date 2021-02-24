@@ -5,13 +5,13 @@ server side
 import socket
 import threading
 from concurrent.futures import ThreadPoolExecutor
+from multiprocessing import Process
 
 # FUNCIONT TO ACCEPT MULTIBLE CONNECTION AT THE SAME TIME
 
 
 def init_Sandbox():
-    command = 'find_file'
-    send_
+    while True:
 
 
 def connect_client():
