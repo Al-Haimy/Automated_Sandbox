@@ -6,12 +6,33 @@ import socket
 import threading
 from concurrent.futures import ThreadPoolExecutor
 from multiprocessing import Process
+import json
 
 # FUNCIONT TO ACCEPT MULTIBLE CONNECTION AT THE SAME TIME
 
 
-def init_Sandbox():
+def send_command(target):
+    jsondata = json.dumps('check')
+    target.send(jsondata.encode())
+
+
+def recive_check(target):
+    data = ''
     while True:
+        try:
+            data = data + target.recv(1024).decode().strip()
+            return json.loads(data)
+        except ValueError:
+            continue
+
+# FUNCTION TO START THE CONNUNICATION BETWEEN TWO DEVICES
+
+
+def init_Sandbox(target):
+    while True:
+        send_command(target)
+        respons = recive_check(target)
+        print(respons)
 
 
 def connect_client():
@@ -27,7 +48,6 @@ def connect_client():
             client, ip = tar
             CLIENTS.append(client)
             IPS.append(ip)
-            TARGETS.append(tar)
             print(f"{str(ip)} Has been Connected ")
         except:
             pass
@@ -41,7 +61,6 @@ PORT = 55555
 print(f'just assigned Ip {IP} and Port {PORT}')
 CLIENTS = []
 IPS = []
-TARGETS = []
 # INITIATE THE CONNECTION WITH SOCKET
 SOK = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 SOK.bind((IP, PORT))
@@ -52,11 +71,12 @@ stop_flag = False
 T = threading.Thread(target=connect_client)
 T.start()
 
-
+# CHECK HOW MANY DEVICES WAS FOUND AND THEN START THE PROCESS
 while True:
     if len(IPS) == 0:
         pass
     elif len(IPS) == 1:
-        init_Sandbox(CLIENTS[0], IPS[0])
+        init_Sandbox(CLIENTS[0])
     elif len(IPS) > 1:
-        for n in TARGETS:
+        for n in CLIENTS:
+            Process(target=init_Sandbox, args=(n,)).start()
