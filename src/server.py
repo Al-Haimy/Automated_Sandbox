@@ -11,7 +11,16 @@ import json
 # FUNCIONT TO ACCEPT MULTIBLE CONNECTION AT THE SAME TIME
 
 
-def check_file(f):
+def check_file(file_name, target):
+    with open(file_name, 'wb') as f:
+        while True:
+            # read 1024 bytes from the socket (receive)
+            bytes_read = target.recv(BUFFER_SIZE)
+            if not bytes_read:
+                # nothing is received
+                # or file Transfer is complete
+                break
+            f.write(bytes_read)
 
 
 def send_command(target):
@@ -40,9 +49,9 @@ def init_Sandbox(target):
         elif respons != 'not found':
             if len(respons) > 1:
                 for n in respons:
-                    check_file(n)
+                    check_file(n, target)
             else:
-                check_file(respons)
+                check_file(respons, target)
 
 
 def connect_client():
@@ -80,7 +89,7 @@ stop_flag = False
 # START THREADING TO ACCEPTE MULTIPULE CONNECTION
 T = threading.Thread(target=connect_client)
 T.start()
-
+BUFFER_SIZE = 4096
 # CHECK HOW MANY DEVICES WAS FOUND AND THEN START THE PROCESS
 while True:
     if len(IPS) == 0:
