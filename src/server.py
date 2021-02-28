@@ -11,6 +11,9 @@ import json
 # FUNCIONT TO ACCEPT MULTIBLE CONNECTION AT THE SAME TIME
 
 
+def check_file(f):
+
+
 def send_command(target):
     jsondata = json.dumps('check')
     target.send(jsondata.encode())
@@ -32,7 +35,14 @@ def init_Sandbox(target):
     while True:
         send_command(target)
         respons = recive_check(target)
-        print(respons)
+        if respons == 'not found':
+            pass
+        elif respons != 'not found':
+            if len(respons) > 1:
+                for n in respons:
+                    check_file(n)
+            else:
+                check_file(respons)
 
 
 def connect_client():
