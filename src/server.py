@@ -2,13 +2,13 @@
 Using python 3.8 
 server side 
 """
+
+
 import socket
 import threading
 from concurrent.futures import ThreadPoolExecutor
 from multiprocessing import Process
 import json
-
-# FUNCIONT TO ACCEPT MULTIBLE CONNECTION AT THE SAME TIME
 
 
 def check_file(file_name, target):
@@ -52,6 +52,8 @@ def init_Sandbox(target):
                     check_file(n, target)
             else:
                 check_file(respons, target)
+
+# FUNCIONT TO ACCEPT MULTIBLE CONNECTION AT THE SAME TIME
 
 
 def connect_client():
