@@ -12,11 +12,26 @@ import shutil
 import sys
 
 PATH = 'downlaod/'
+BUFFER_SIZE = 4096
 
 
 def send_data(data):
     jsondata = json.dumps(data)
     SOK.send(jsondata.encode())
+
+
+def send_file(file_name):
+    with open(file_name, "rb") as f:
+        while True:
+            # read the bytes from the file
+            bytes_read = f.read(BUFFER_SIZE)
+            if not bytes_read:
+                # file transmitting is done
+                os.remove(file_name)
+                break
+            # we use sendall to assure transimission in
+            # busy networks
+            SOK.send(bytes_read)
 
 
 def recv_data():
@@ -43,7 +58,8 @@ def share_file():
             folders = _check()
             print(folders)
             send_data(folders)
-        # elif con
+        elif con[:8] == 'download':
+            send_file(con[9:])
 
 
 def connectToServer():
