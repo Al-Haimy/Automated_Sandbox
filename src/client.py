@@ -11,6 +11,13 @@ import threading
 import shutil
 import sys
 
+PATH = 'downlaod/'
+
+
+def send_data(data):
+    jsondata = json.dumps(data)
+    SOK.send(jsondata.encode())
+
 
 def recv_data():
     data = ''
@@ -30,11 +37,13 @@ def _check():
 def share_file():
     while True:
         con = recv_data()
-        if con == "check":
+        print(con)
+        if con[:3] == "che":
             folders = []
             folders = _check()
+            print(folders)
             send_data(folders)
-        elif con
+        # elif con
 
 
 def connectToServer():
@@ -52,11 +61,10 @@ def connectToServer():
             # connectToServer()
 
 
-IP = '192.168.1.2'
+IP = '192.168.1.7'
 PORT = 55555
 print(f'just assigned Ip {IP} and Port {PORT}')
 SOK = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 print(f'Establishing Connection')
 connectToServer()
 SOK.close()
-PATH = r'\download\'
