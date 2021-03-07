@@ -34,6 +34,7 @@ def share_file():
             folders = []
             folders = _check()
             send_data(folders)
+        elif con
 
 
 def connectToServer():
