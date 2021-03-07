@@ -9,6 +9,7 @@ import threading
 from concurrent.futures import ThreadPoolExecutor
 from multiprocessing import Process
 import json
+from time import sleep
 
 
 def check_file(file_name, target):
@@ -44,6 +45,7 @@ def init_Sandbox(target):
     while True:
         send_command(target)
         respons = recive_check(target)
+        print(respons)
         if respons == 'not found':
             pass
         elif respons != 'not found':
@@ -52,12 +54,13 @@ def init_Sandbox(target):
                     check_file(n, target)
             else:
                 check_file(respons, target)
+        sleep(10)
 
 # FUNCIONT TO ACCEPT MULTIBLE CONNECTION AT THE SAME TIME
 
 
 def connect_client():
-    while True:
+    while len(CLIENTS) != 2:
         if stop_flag:
             break
 # SETTING TIMEOUT SO THE LOOP CONTINUE LOOKING FOR OTHER CONNECTIONS FASTER
@@ -70,13 +73,14 @@ def connect_client():
             CLIENTS.append(client)
             IPS.append(ip)
             print(f"{str(ip)} Has been Connected ")
+            threading.Thread(target=init_Sandbox, args=(client,)).start()
         except:
             pass
 
 
 # SETING THE CONNECTION FIRST
 # CHOOSE THE IP WHERE IS THE SERVER LOCAL IP IS ? , AND CHOOSE PORT THAT IS NOT IN USE
-IP = '192.168.1.2'
+IP = '192.168.1.7'
 PORT = 55555
 # THIS WILL BE THE LIST OF CLIENTS WILL BE ADDED TO THIS ARRAY
 print(f'just assigned Ip {IP} and Port {PORT}')
@@ -93,11 +97,11 @@ T = threading.Thread(target=connect_client)
 T.start()
 BUFFER_SIZE = 4096
 # CHECK HOW MANY DEVICES WAS FOUND AND THEN START THE PROCESS
-while True:
-    if len(IPS) == 0:
-        pass
-    elif len(IPS) == 1:
-        init_Sandbox(CLIENTS[0])
-    elif len(IPS) > 1:
-        for n in CLIENTS:
-            Process(target=init_Sandbox, args=(n,)).start()
+# while True:
+#     if len(IPS) == 0:
+#         pass
+#     elif len(IPS) == 1:
+#         init_Sandbox(CLIENTS[0])
+#     elif len(IPS) > 1:
+#         for n in CLIENTS:
+#             Process(target=init_Sandbox, args=(n,)).start()
