@@ -11,12 +11,17 @@ from multiprocessing import Process
 import json
 from time import sleep
 
+BUFFER_SIZE = 4096
+
 
 def check_file(file_name, target):
+    send_command(target, 'download '+file_name)
     with open(file_name, 'wb') as f:
+
         while True:
             # read 1024 bytes from the socket (receive)
             bytes_read = target.recv(BUFFER_SIZE)
+            print(bytes_read)
             if not bytes_read:
                 # nothing is received
                 # or file Transfer is complete
@@ -24,8 +29,8 @@ def check_file(file_name, target):
             f.write(bytes_read)
 
 
-def send_command(target):
-    jsondata = json.dumps('check')
+def send_command(target, msg):
+    jsondata = json.dumps(msg)
     target.send(jsondata.encode())
 
 
@@ -43,7 +48,7 @@ def recive_check(target):
 
 def init_Sandbox(target):
     while True:
-        send_command(target)
+        send_command(target, 'check')
         respons = recive_check(target)
         print(respons)
         if respons == 'not found':
@@ -93,9 +98,10 @@ SOK.listen(10)
 # TO STOP THE LOOP FOR THE CONNECTION IF NEEDED
 stop_flag = False
 # START THREADING TO ACCEPTE MULTIPULE CONNECTION
+
 T = threading.Thread(target=connect_client)
 T.start()
-BUFFER_SIZE = 4096
+
 # CHECK HOW MANY DEVICES WAS FOUND AND THEN START THE PROCESS
 # while True:
 #     if len(IPS) == 0:
