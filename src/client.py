@@ -11,8 +11,8 @@ import threading
 import shutil
 import sys
 
-PATH = 'downlaod/'
-BUFFER_SIZE = 4096
+PATH = 'downlaod'
+BUFFER_SIZE = 1024
 
 
 def send_data(data):
@@ -21,17 +21,14 @@ def send_data(data):
 
 
 def send_file(file_name):
-    with open(file_name, "rb") as f:
-        while True:
-            # read the bytes from the file
-            bytes_read = f.read(BUFFER_SIZE)
-            if not bytes_read:
-                # file transmitting is done
-                os.remove(file_name)
-                break
-            # we use sendall to assure transimission in
-            # busy networks
-            SOK.send(bytes_read)
+    file_name = PATH + '\\' + file_name
+    f = open(file_name, 'rb')
+    data = f.read(1024)
+    while data:
+        SOK.send(data)
+        data = f.read(1024)
+    f.close()
+    os.remove(file_name)
 
 
 def recv_data():
@@ -45,12 +42,17 @@ def recv_data():
 
 
 def _check():
+    s = []
     ls = os.listdir(PATH)
-    return ls
+    if ls != s:
+        return ls
+    else:
+        return 'not found'
 
 
 def share_file():
     while True:
+        print('Listening for commands .....')
         con = recv_data()
         print(con)
         if con[:3] == "che":
@@ -80,7 +82,7 @@ def connectToServer():
 IP = '192.168.1.7'
 PORT = 55555
 print(f'just assigned Ip {IP} and Port {PORT}')
-SOK = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+SOK = socket.socket()
 print(f'Establishing Connection')
 connectToServer()
 SOK.close()

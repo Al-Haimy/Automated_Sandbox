@@ -11,22 +11,27 @@ from multiprocessing import Process
 import json
 from time import sleep
 
-BUFFER_SIZE = 4096
+BUFFER_SIZE = 1024
 
 
 def check_file(file_name, target):
     send_command(target, 'download '+file_name)
-    with open(file_name, 'wb') as f:
+    # file_size = int(recive_check(target))
+    f = open(file_name, 'wb')
+    target.settimeout(1)
 
-        while True:
-            # read 1024 bytes from the socket (receive)
-            bytes_read = target.recv(BUFFER_SIZE)
-            print(bytes_read)
-            if not bytes_read:
-                # nothing is received
-                # or file Transfer is complete
-                break
-            f.write(bytes_read)
+    print(f'downloading the file {file_name}')
+    data_chunk = target.recv(1024)
+
+    while data_chunk:
+        try:
+            print(f'receiving data.....!')
+            f.write(data_chunk)
+            data_chunk = target.recv(1024)
+        except socket.timeout:
+            target.settimeout(None)
+            break
+    f.close()
 
 
 def send_command(target, msg):
@@ -49,17 +54,21 @@ def recive_check(target):
 def init_Sandbox(target):
     while True:
         send_command(target, 'check')
+        print('Sending command to check for files')
         respons = recive_check(target)
-        print(respons)
+        print(f'Files has been found {respons}')
         if respons == 'not found':
             pass
         elif respons != 'not found':
+
             if len(respons) > 1:
                 for n in respons:
+                    print(f'sending request to get file {n}')
                     check_file(n, target)
+                    sleep(2)
             else:
-                check_file(respons, target)
-        sleep(10)
+                check_file(respons[0], target)
+        sleep(5)
 
 # FUNCIONT TO ACCEPT MULTIBLE CONNECTION AT THE SAME TIME
 
@@ -92,7 +101,7 @@ print(f'just assigned Ip {IP} and Port {PORT}')
 CLIENTS = []
 IPS = []
 # INITIATE THE CONNECTION WITH SOCKET
-SOK = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+SOK = socket.socket()
 SOK.bind((IP, PORT))
 SOK.listen(10)
 # TO STOP THE LOOP FOR THE CONNECTION IF NEEDED
