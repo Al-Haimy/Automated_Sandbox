@@ -110,13 +110,3 @@ stop_flag = False
 
 T = threading.Thread(target=connect_client)
 T.start()
-
-# CHECK HOW MANY DEVICES WAS FOUND AND THEN START THE PROCESS
-# while True:
-#     if len(IPS) == 0:
-#         pass
-#     elif len(IPS) == 1:
-#         init_Sandbox(CLIENTS[0])
-#     elif len(IPS) > 1:
-#         for n in CLIENTS:
-#             Process(target=init_Sandbox, args=(n,)).start()
