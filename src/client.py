@@ -10,6 +10,7 @@ import os
 import threading
 import shutil
 import sys
+import filetype
 
 PATH = 'downlaod'
 BUFFER_SIZE = 1024
@@ -21,6 +22,7 @@ def send_data(data):
 
 
 def send_file(file_name):
+
     file_name = PATH + '\\' + file_name
     f = open(file_name, 'rb')
     data = f.read(1024)
