@@ -7,6 +7,7 @@ import json
 import subprocess
 import time
 import os
+from os.path import getsize
 import threading
 import shutil
 import sys
@@ -14,6 +15,15 @@ import filetype
 
 PATH = 'downlaod'
 BUFFER_SIZE = 1024
+
+
+def fileInfo(path):
+    info = []
+    file_type = filetype.guess(path).mime
+    file_size = getsize(path)
+    info.append(file_type)
+    info.append(str(file_size))
+    send_data(info)
 
 
 def send_data(data):
@@ -24,8 +34,10 @@ def send_data(data):
 def send_file(file_name):
 
     file_name = PATH + '\\' + file_name
+    fileInfo(file_name)
     f = open(file_name, 'rb')
     data = f.read(1024)
+    # time.sleep(2)
     while data:
         SOK.send(data)
         data = f.read(1024)
@@ -68,7 +80,6 @@ def share_file():
 
 def connectToServer():
     while True:
-
         try:
             # print("trying to find connection")
             SOK.connect((IP, PORT))
